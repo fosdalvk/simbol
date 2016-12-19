@@ -128,3 +128,16 @@ travis:
 	@while true; do clear; travis branches; sleep 10; done
 #. }=-
 #. }=-
+
+VERSION := $(shell awk '$$2~/^VERSION$$/{print$$3}' share/unit/docker/Dockerfile)
+
+mkdocker:
+	docker build -t="schtunt/simbol:${VERSION}" share/unit/docker
+#docker run -e PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/root/bin -tit --entrypoint="pwd" "schtunt/simbol:${VERSION}"
+
+rmdocker:
+	docker ps -aq | xargs docker rm
+	docker rmi schtunt/simbol:${VERSION}
+
+docker:
+	docker run -tit schtunt/simbol:${VERSION}
