@@ -128,7 +128,7 @@ function git:rm() {
 
                 git filter-branch\
                     --force\
-                    --index-filter "git rm -rf --cached --ignore-unmatch ${gitrelpath}" \
+                    --index-filter "git rm -rf --cached --ignore-unmatch ${gitrelpath}"\
                     --prune-empty --tag-name-filter cat -- --all
 
                 e=${CODE_SUCCESS?}
