@@ -24,7 +24,7 @@ function ::gpg:keypath() {
     local -i e=${CODE_FAILURE?}
 
     if [ $# -eq 1 ]; then
-        local -a data
+        local -a data=()
         local gpgkid="${1}"
         local -r gpgkp="${HOME?}/.gnupg/${USER_USERNAME?}.${SIMBOL_PROFILE%%@*}"
         case ${gpgkid}:${#gpgkid} in
@@ -35,7 +35,7 @@ function ::gpg:keypath() {
             '*':1)
                 local -a files=( ${gpgkp}.* )
                 if ! [[ ${files[0]} =~ ${SIMBOL_PROFILE%%@*}\.\*$ ]]; then
-                    for file in ${files[@]}; do
+                    for file in "${files[@]}"; do
                         gpgkid=$(
                             basename ${file} |
                                 sed -n -e "s/${USER_USERNAME?}.${SIMBOL_PROFILE%%@*}.\(.*\).sec/\1/p"
