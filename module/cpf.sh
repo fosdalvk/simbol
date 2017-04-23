@@ -408,45 +408,47 @@ function cpf:printf() {
 #. }=-
 #. theme -={
 function theme() {
-    if [ $# -gt 0 ]; then
-        local dvc=${FD_STDOUT}
-        local item="$1"
-        local s
-        local c
-        case ${item}:${2:--} in
-            HAS_PASSED:*)        c='g'; s='PASS';;
-            HAS_AUTOED:0)        c='g'; s='PASS';;
-            HAS_WARNED:*)        c='y'; s='WARN';;
-            HAS_FAILED:*)        c='r'; s='FAIL';;
-            HAS_AUTOED:[1-9]*)   c='r'; s='FAIL';;
+    local -i e=$?
 
-            TRUE:*)         c='g'; s='TRUE';;
-            FALSE:*)        c='r'; s='FALSE';;
+    [ $# -gt 0 ] | return $e
 
-            INFO:*)         c='w'; s='INFO';           dvc=${FD_STDERR};;
-            NOTE:*)         c='w'; s='NOTE';           dvc=${FD_STDERR};;
-            WARN:*)         c='y'; s='WARN';           dvc=${FD_STDERR};;
-            DEPR:*)         c='y'; s='DEPRECATED';     dvc=${FD_STDERR};;
-            ERR:*)          c='r'; s='ERROR';          dvc=${FD_STDERR};;
-            ALERT:*)        c='r'; s='ALERT';          dvc=${FD_STDERR};;
-            ERR_USAGE:*)    c='r'; s='USAGE ERROR';    dvc=${FD_STDERR};;
-            EXCEPTION:*)    c='r'; s='EXCEPTION';      dvc=${FD_STDERR};;
-            ERR_INTERNAL:*) c='r'; s='INTERNAL ERROR'; dvc=${FD_STDERR};;
+    local dvc=${FD_STDOUT}
+    local item="$1"
+    local s
+    local c
+    case ${item}:${2:--} in
+        HAS_PASSED:*)        c='g'; s='PASS';;
+        HAS_AUTOED:0)        c='g'; s='PASS';;
+        HAS_WARNED:*)        c='y'; s='WARN';;
+        HAS_FAILED:*)        c='r'; s='FAIL';;
+        HAS_AUTOED:[1-9]*)   c='r'; s='FAIL';;
 
-            TODO:*)         c='y'; s='TODO';           dvc=${FD_STDERR};;
-            FIXME:*)        c='r'; s='FIXME';          dvc=${FD_STDERR};;
+        TRUE:*)         c='g'; s='TRUE';;
+        FALSE:*)        c='r'; s='FALSE';;
 
-            *:*) core:raise EXCEPTION_BAD_FN_CALL 1
-        esac
+        INFO:*)         c='w'; s='INFO';           dvc=${FD_STDERR};;
+        NOTE:*)         c='w'; s='NOTE';           dvc=${FD_STDERR};;
+        WARN:*)         c='y'; s='WARN';           dvc=${FD_STDERR};;
+        DEPR:*)         c='y'; s='DEPRECATED';     dvc=${FD_STDERR};;
+        ERR:*)          c='r'; s='ERROR';          dvc=${FD_STDERR};;
+        ALERT:*)        c='r'; s='ALERT';          dvc=${FD_STDERR};;
+        ERR_USAGE:*)    c='r'; s='USAGE ERROR';    dvc=${FD_STDERR};;
+        EXCEPTION:*)    c='r'; s='EXCEPTION';      dvc=${FD_STDERR};;
+        ERR_INTERNAL:*) c='r'; s='INTERNAL ERROR'; dvc=${FD_STDERR};;
 
-        if [ $# -eq 1 ]; then
-            cpf:printf "%{+$c}$s%{-$c}\n" >&${dvc}
-        else
-            cpf:printf "%{+$c}$s %{bo:[%s]}%{-$c}\n" "${@:2}" >&${dvc}
-        fi
+        TODO:*)         c='y'; s='TODO';           dvc=${FD_STDERR};;
+        FIXME:*)        c='r'; s='FIXME';          dvc=${FD_STDERR};;
+
+        *:*) core:raise EXCEPTION_BAD_FN_CALL 1
+    esac
+
+    if [ $# -eq 1 ]; then
+        cpf:printf "%{+$c}$s%{-$c}\n" >&${dvc}
     else
-        echo >&${dvc}
+        cpf:printf "%{+$c}$s %{bo:[%s]}%{-$c}\n" "${@:2}" >&${dvc}
     fi
+
+    return $e
 }
 #. }=-
 #. }=-
